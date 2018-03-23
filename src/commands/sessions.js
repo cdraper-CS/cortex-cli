@@ -68,22 +68,74 @@ module.exports.DescribeSessionCommand = class DescribeSessionCommand {
         this.program = program;
     }
 
-    execute(sessionName, options) {
+    execute(sessionId, options) {
         const profile = loadProfile(options.profile);
-        debug('%s.executeDescribeSession(%s)', profile.name, sessionName);
-
+        debug('%s.executeDescribeSession(%s)', profile.name, sessionId);
         const sessions = new Sessions(profile.url);
-        sessions.describeSession(profile.token, sessionName).then((response) => {
+        sessions.describeSession(profile.token, sessionId).then((response) => {
             if (response.success) {
                 let result = filterObject(response.session, options);
                 printSuccess(JSON.stringify(result, null, 2), options);
             }
             else {
-                printError(`Failed to describe session ${sessionName}: ${response.message}`, options);
+                printError(`Failed to describe session ${sessionId}: ${response.message}`, options);
             }
         })
             .catch((err) => {
-                printError(`Failed to describe session ${sessionName}: ${err.status} ${err.message}`, options);
+                debug(err);
+                printError(`Failed to describe session ${sessionId}: ${err.status} ${err.message}`, options);
+            });
+    }
+};
+
+module.exports.DeleteSessionCommand = class DeleteSessionCommand {
+
+    constructor(program) {
+        this.program = program;
+    }
+
+    execute(sessionId, options) {
+        const profile = loadProfile(options.profile);
+        debug('%s.deleteSession()', profile.name);
+
+        const sessions = new Sessions(profile.url);
+        sessions.deleteSession(profile.token, sessionId).then((response) => {
+            if (response.success) {
+                printSuccess(`Session successfully deleted.`, options);
+            }
+            else {
+                printError(`Failed to delete session: ${response.status} ${response.message}`, options);
+            }
+        })
+            .catch((err) => {
+                debug(err);
+                printError(`Failed to delete session: ${err.status} ${err.message}`, options);
+            });
+    }
+};
+
+module.exports.AddDataToSessionCommand = class AddDataToSessionCommand {
+
+    constructor(program) {
+        this.program = program;
+    }
+
+    execute(sessionId, instanceId, options) {
+        const profile = loadProfile(options.profile);
+        debug('%s.addDataToSession()', profile.name);
+
+        const sessions = new Sessions(profile.url);
+        sessions.addDataToSession(profile.token, sessionId, instanceId).then((response) => {
+            if (response.success) {
+                printSuccess(`Data successfully added to session.`, options);
+            }
+            else {
+                printError(`Failed to add data to session: ${response.status} ${response.message}`, options);
+            }
+        })
+            .catch((err) => {
+                debug(err);
+                printError(`Failed to add data to session: ${err.status} ${err.message}`, options);
             });
     }
 };

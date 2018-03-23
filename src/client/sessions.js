@@ -37,20 +37,47 @@ module.exports = class Sessions {
             });
     }
 
-    describeSession(token, sessionName) {
-        const endpoint = `${this.endpoint}/${sessionName}`;
-        debug('describeSession(%s) => %s', sessionName, endpoint);
+    describeSession(token, sessionId) {
+        const endpoint = `${this.endpoint}/${sessionId}`;
+        debug('describeSession(%s) => %s', sessionId, endpoint);
         return request
             .get(endpoint)
             .set('Authorization', `Bearer ${token}`)
             .then((res) => {
-                console.log(res.body, res.status);
                 if (res.ok) {
                     return {success: true, session: res.body};
                 }
                 else {
                     return {success: false, message: res.body, status: res.status};
                 }
+            });
+    }
+
+    deleteSession(token, sessionId) {
+        const endpoint = `${this.endpoint}/${sessionId}`;
+        debug('deleteSession(%s) => %s', sessionId, endpoint);
+        return request
+            .delete(endpoint)
+            .set('Authorization', `Bearer ${token}`)
+            .then((res) => {
+                if (res.ok) {
+                    return {success: true, message: res.body};
+                }
+                return {success: false, message: res.body, status: res.status};
+            });
+    }
+
+    addDataToSession(token, sessionId, instanceId) {
+        const endpoint = `${this.endpoint}/${instanceId}/${sessionId}`;
+        debug('addDataToSession(%s, %s) => %s', sessionId, instanceId, endpoint);
+        return request
+            .post(endpoint)
+            .set('Authorization', `Bearer ${token}`)
+            .then((res) => {
+                if (res.ok) {
+                    return {success: true, message: res.body};
+                }
+                return {success: false, message: res.body, status: res.status};
             });
     }
 };

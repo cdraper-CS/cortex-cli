@@ -20,7 +20,9 @@ const program = require('commander');
 const chalk = require('chalk');
 const {
     ListSessionsCommand,
-    DescribeSessionCommand
+    DescribeSessionCommand,
+    DeleteSessionCommand,
+    AddDataToSessionCommand
 } = require('../src/commands/sessions');
 
 let processed = false;
@@ -44,16 +46,48 @@ program
         }
     });
 
-// Describe Agent
+// Describe Session
 program
-    .command('describe <sessionName>')
+    .command('describe <sessionId>')
     .description('Describe session')
     .option('--color [on/off]', 'Turn on/off color output.', 'on')
     .option('--profile [profile]', 'The profile to use')
     .option('--query [query]', 'A JMESPath query to use in filtering the response data.')
-    .action((sessionName, options) => {
+    .action((sessionId, options) => {
         try {
-            new DescribeSessionCommand(program).execute(sessionName, options);
+            new DescribeSessionCommand(program).execute(sessionId, options);
+            processed = true;
+        }
+        catch (err) {
+            console.error(chalk.red(err.message));
+        }
+    });
+
+// Delete Session
+program
+    .command('delete <sessionId>')
+    .description('Delete session')
+    .option('--color [on/off]', 'Turn on/off color output.', 'on')
+    .option('--profile [profile]', 'The profile to use')
+    .action((sessionId, options) => {
+        try {
+            new DeleteSessionCommand(program).execute(sessionId, options);
+            processed = true;
+        }
+        catch (err) {
+            console.error(chalk.red(err.message));
+        }
+    });
+
+// Add Data to Session
+program
+    .command('add <sessionId> <instanceId>')
+    .description('Add data to session')
+    .option('--color [on/off]', 'Turn on/off color output.', 'on')
+    .option('--profile [profile]', 'The profile to use')
+    .action((sessionId, instanceId, options) => {
+        try {
+            new AddDataToSessionCommand(program).execute(sessionId, instanceId, options);
             processed = true;
         }
         catch (err) {
