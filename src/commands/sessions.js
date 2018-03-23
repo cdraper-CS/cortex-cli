@@ -61,3 +61,29 @@ module.exports.ListSessionsCommand = class ListSessionsCommand {
             });
     }
 };
+
+module.exports.DescribeSessionCommand = class DescribeSessionCommand {
+
+    constructor(program) {
+        this.program = program;
+    }
+
+    execute(sessionName, options) {
+        const profile = loadProfile(options.profile);
+        debug('%s.executeDescribeSession(%s)', profile.name, sessionName);
+
+        const sessions = new Sessions(profile.url);
+        sessions.describeSession(profile.token, sessionName).then((response) => {
+            if (response.success) {
+                let result = filterObject(response.session, options);
+                printSuccess(JSON.stringify(result, null, 2), options);
+            }
+            else {
+                printError(`Failed to describe session ${sessionName}: ${response.message}`, options);
+            }
+        })
+            .catch((err) => {
+                printError(`Failed to describe session ${sessionName}: ${err.status} ${err.message}`, options);
+            });
+    }
+};

@@ -19,7 +19,8 @@
 const program = require('commander');
 const chalk = require('chalk');
 const {
-    ListSessionsCommand
+    ListSessionsCommand,
+    DescribeSessionCommand
 } = require('../src/commands/sessions');
 
 let processed = false;
@@ -36,6 +37,23 @@ program
     .action((options) => {
         try {
             new ListSessionsCommand(program).execute(options);
+            processed = true;
+        }
+        catch (err) {
+            console.error(chalk.red(err.message));
+        }
+    });
+
+// Describe Agent
+program
+    .command('describe <sessionName>')
+    .description('Describe session')
+    .option('--color [on/off]', 'Turn on/off color output.', 'on')
+    .option('--profile [profile]', 'The profile to use')
+    .option('--query [query]', 'A JMESPath query to use in filtering the response data.')
+    .action((sessionName, options) => {
+        try {
+            new DescribeSessionCommand(program).execute(sessionName, options);
             processed = true;
         }
         catch (err) {

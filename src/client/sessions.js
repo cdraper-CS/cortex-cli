@@ -36,4 +36,21 @@ module.exports = class Sessions {
                 return {success: false, status: res.status, message: res.body};
             });
     }
+
+    describeSession(token, sessionName) {
+        const endpoint = `${this.endpoint}/${sessionName}`;
+        debug('describeSession(%s) => %s', sessionName, endpoint);
+        return request
+            .get(endpoint)
+            .set('Authorization', `Bearer ${token}`)
+            .then((res) => {
+                console.log(res.body, res.status);
+                if (res.ok) {
+                    return {success: true, session: res.body};
+                }
+                else {
+                    return {success: false, message: res.body, status: res.status};
+                }
+            });
+    }
 };
