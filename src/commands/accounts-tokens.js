@@ -63,7 +63,7 @@ module.exports.UpgradeTokenCommand = class {
                     printSuccess(JSON.stringify(result, options));
                 }
                 else {
-                    printError(`Failed to refresh token: ${response.status} ${response.message}`, options);
+                    printError(`Failed to upgrade token: ${response.status} ${response.message}`, options);
                 }
             })
             .catch((err) => {
@@ -89,7 +89,7 @@ module.exports.DowngradeTokenCommand = class {
                     printSuccess(JSON.stringify(result, options));
                 }
                 else {
-                    printError(`Failed to refresh token: ${response.status} ${response.message}`, options);
+                    printError(`Failed to downgrade token: ${response.status} ${response.message}`, options);
                 }
             })
             .catch((err) => {
