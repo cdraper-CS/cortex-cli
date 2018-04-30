@@ -45,7 +45,7 @@ program
 
 // Save Connections
 program
-    .command('save <connectionDefinition>')
+    .command('save [connectionDefinition]')
     .description('Save a connections definition. Takes JSON file by default.')
     .option('--color [on/off]', 'Turn on/off colors for JSON output.', 'on')
     .option('--profile [profile]', 'The profile to use')
